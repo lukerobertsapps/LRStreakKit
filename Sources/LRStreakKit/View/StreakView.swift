@@ -63,7 +63,8 @@ public struct StreakView: View {
         )
         .onAppear {
             if streak.hasCompletedStreak() && animateOnAppear {
-                withAnimation {
+                Task {
+                    try? await Task.sleep(nanoseconds: 5_000_000)
                     animation.toggle()
                 }
             }
