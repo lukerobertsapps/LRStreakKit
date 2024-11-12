@@ -20,6 +20,14 @@ public final class StreakManager: ObservableObject {
         self.currentStreak = loadStreak()
     }
 
+    /// Whether the streak has been completed for the day
+    /// - Parameter today: Pass in a date to check against. Defaults to now.
+    /// - Returns: True if the outcome of the streak is alreadyCompletedToday
+    public func hasCompletedStreak(today: Date = .now) -> Bool {
+        let outcome = currentStreak.determineOutcome(for: today)
+        return outcome == .alreadyCompletedToday
+    }
+
     /// Gets the length of the current streak
     /// - Parameter date: Pass in a date to check against. Defaults to now.
     /// - Returns: The length of the streak in days

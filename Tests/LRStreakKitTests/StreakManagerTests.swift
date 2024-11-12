@@ -56,51 +56,67 @@ class StreakManagerTests {
     }
 
     @Test func streakStaysSameOnSameDay() {
-        let streak = Streak(length: 5, lastDate: .with(day: 5, hour: 12, minute: 0))
+        let streak = Streak(length: 5, lastDate: .make(day: 5, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        sut.updateStreak(onDate: .with(day: 5, hour: 14, minute: 0))
+        sut.updateStreak(onDate: .make(day: 5, hour: 14, minute: 0))
         #expect(sut.currentStreak.length == 5)
     }
 
     @Test func streakIncrementsOnConsecutiveDay() {
-        let streak = Streak(length: 1, lastDate: .with(day: 10, hour: 12, minute: 0))
+        let streak = Streak(length: 1, lastDate: .make(day: 10, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        sut.updateStreak(onDate: .with(day: 11, hour: 14, minute: 0))
+        sut.updateStreak(onDate: .make(day: 11, hour: 14, minute: 0))
         #expect(sut.currentStreak.length == 2)
     }
 
     @Test func streakBreaksOnNonConsecutiveDay() {
-        let streak = Streak(length: 10, lastDate: .with(day: 1, hour: 12, minute: 0))
+        let streak = Streak(length: 10, lastDate: .make(day: 1, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        sut.updateStreak(onDate: .with(day: 30, hour: 12, minute: 0))
+        sut.updateStreak(onDate: .make(day: 30, hour: 12, minute: 0))
         #expect(sut.currentStreak.length == 1)
     }
 
     @Test func getStreakLengthForSameDay() {
-        let streak = Streak(length: 100, lastDate: .with(day: 1, hour: 12, minute: 0))
+        let streak = Streak(length: 100, lastDate: .make(day: 1, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        let result = sut.getStreakLength(forDate: .with(day: 1, hour: 13, minute: 0))
+        let result = sut.getStreakLength(forDate: .make(day: 1, hour: 13, minute: 0))
         #expect(result == 100)
     }
 
     @Test func getStreakLengthForNextDay() {
-        let streak = Streak(length: 10, lastDate: .with(day: 1, hour: 12, minute: 0))
+        let streak = Streak(length: 10, lastDate: .make(day: 1, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        let result = sut.getStreakLength(forDate: .with(day: 2, hour: 12, minute: 0))
+        let result = sut.getStreakLength(forDate: .make(day: 2, hour: 12, minute: 0))
         #expect(result == 10)
     }
 
     @Test func getStreakLengthForInvalidDay() {
-        let streak = Streak(length: 50, lastDate: .with(day: 1, hour: 12, minute: 0))
+        let streak = Streak(length: 50, lastDate: .make(day: 1, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        let result = sut.getStreakLength(forDate: .with(day: 25, hour: 12, minute: 0))
+        let result = sut.getStreakLength(forDate: .make(day: 25, hour: 12, minute: 0))
         #expect(result == 0)
+    }
+
+    @Test func hasCompletedStreak() {
+        let streak = Streak(length: 50, lastDate: .make(day: 1, hour: 12, minute: 0))
+        let sut = StreakManager(persistence: persistence)
+        sut.currentStreak = streak
+        let result = sut.hasCompletedStreak(today: .make(day: 1, hour: 13, minute: 0))
+        #expect(result == true)
+    }
+
+    @Test func hasNotCompletedStreak() {
+        let streak = Streak(length: 50, lastDate: .make(day: 1, hour: 12, minute: 0))
+        let sut = StreakManager(persistence: persistence)
+        sut.currentStreak = streak
+        let result = sut.hasCompletedStreak(today: .make(day: 5, hour: 12, minute: 0))
+        #expect(result == false)
     }
 }
 
@@ -109,11 +125,5 @@ class StreakManagerTests {
 extension StreakManagerTests {
     func makeData(from streak: Streak) -> Data {
         return try! JSONEncoder().encode(streak)
-    }
-}
-
-extension Date {
-    static func with(month: Int = 5, day: Int, hour: Int, minute: Int) -> Date {
-        DateComponents(calendar: Calendar.current, month: month, day: day, hour: hour, minute: minute).date!
     }
 }
