@@ -51,8 +51,10 @@ public final class StreakManager: ObservableObject {
         case .alreadyCompletedToday:
             return
         case .streakContinues:
+            currentStreak.lastDate = date
             currentStreak.length += 1
         case .streakBroken:
+            currentStreak.lastDate = date
             currentStreak.length = 1
         }
         save(streak: currentStreak)

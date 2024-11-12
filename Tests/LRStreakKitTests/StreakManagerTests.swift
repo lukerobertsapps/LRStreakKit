@@ -56,27 +56,33 @@ class StreakManagerTests {
     }
 
     @Test func streakStaysSameOnSameDay() {
-        let streak = Streak(length: 5, lastDate: .make(day: 5, hour: 12, minute: 0))
+        let date = Date.make(day: 5, hour: 12, minute: 0)
+        let streak = Streak(length: 5, lastDate: date)
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
         sut.updateStreak(onDate: .make(day: 5, hour: 14, minute: 0))
         #expect(sut.currentStreak.length == 5)
+        #expect(sut.currentStreak.lastDate == date)
     }
 
     @Test func streakIncrementsOnConsecutiveDay() {
         let streak = Streak(length: 1, lastDate: .make(day: 10, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        sut.updateStreak(onDate: .make(day: 11, hour: 14, minute: 0))
+        let date = Date.make(day: 11, hour: 14, minute: 0)
+        sut.updateStreak(onDate: date)
         #expect(sut.currentStreak.length == 2)
+        #expect(sut.currentStreak.lastDate == date)
     }
 
     @Test func streakBreaksOnNonConsecutiveDay() {
         let streak = Streak(length: 10, lastDate: .make(day: 1, hour: 12, minute: 0))
         let sut = StreakManager(persistence: persistence)
         sut.currentStreak = streak
-        sut.updateStreak(onDate: .make(day: 30, hour: 12, minute: 0))
+        let date = Date.make(day: 30, hour: 12, minute: 0)
+        sut.updateStreak(onDate: date)
         #expect(sut.currentStreak.length == 1)
+        #expect(sut.currentStreak.lastDate == date)
     }
 
     @Test func getStreakLengthForSameDay() {
