@@ -10,6 +10,7 @@ import Foundation
 /// The available types of persistence provided by the library
 public enum StreakPersistenceType {
     case userDefaults
+    case sharedUserDefaults(appGroup: String)
     case documentsDirectory
     case custom(any StreakPersistence)
 
@@ -18,6 +19,13 @@ public enum StreakPersistenceType {
         switch self {
         case .userDefaults:
             return UserDefaults.standard
+        case .sharedUserDefaults(let group):
+            if let shared = UserDefaults(suiteName: group) {
+                return shared
+            } else {
+                print("Unable to create shared userdefaults, defaulting to standard")
+                return UserDefaults.standard
+            }
         case .documentsDirectory:
             return FileManager.default
         case .custom(let streakPersistence):
