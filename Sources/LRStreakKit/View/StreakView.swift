@@ -15,6 +15,9 @@ public struct StreakView: View {
     @EnvironmentObject private var streak: StreakManager
     @State private var animation = false
 
+    // MARK: Environment
+    @Environment(\.colorScheme) private var color
+
     // MARK: Customisation
 
     private let streakColor: Color
@@ -35,17 +38,21 @@ public struct StreakView: View {
     public init(
         streakColor: Color = .orange,
         noStreakColor: Color = .gray,
-        backgroundColor: Color = Color(.systemBackground),
+        backgroundColor: Color? = nil,
         animateOnAppear: Bool = true,
         font: Font = .system(size: 18, weight: .bold, design: .rounded),
         imageHeight: CGFloat = 24
     ) {
         self.streakColor = streakColor
         self.noStreakColor = noStreakColor
-        self.backgroundColor = backgroundColor
         self.animateOnAppear = animateOnAppear
         self.font = font
         self.imageHeight = imageHeight
+        if let backgroundColor {
+            self.backgroundColor = backgroundColor
+        } else {
+            self.backgroundColor = Color(.streakBackground)
+        }
     }
 
     public var body: some View {
@@ -59,7 +66,9 @@ public struct StreakView: View {
         .background(
             backgroundColor
                 .clipShape(.rect(cornerRadius: 12))
-                .shadow(color: .gray.opacity(0.6), radius: 2, y: 2)
+                .if(color == .light) {
+                    $0.shadow(color: .gray.opacity(0.4), radius: 2, y: 2)
+                }
         )
         .onAppear {
             if streak.hasCompletedStreak() && animateOnAppear {
@@ -97,4 +106,17 @@ public struct StreakView: View {
 #Preview {
     StreakView()
         .environmentObject(StreakManager())
+        .preferredColorScheme(.light)
+}
+
+extension View {
+    @ViewBuilder func `if`<Content: View>(
+        _ condition: Bool, transform: (Self) -> Content
+    ) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
 }

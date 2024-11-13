@@ -13,7 +13,7 @@ let package = Package(
         ),
     ],
     targets: [
-        .target(name: "LRStreakKit"),
+        .target(name: "LRStreakKit", resources: [.process("Resources")]),
         .testTarget(
             name: "LRStreakKitTests",
             dependencies: ["LRStreakKit"]

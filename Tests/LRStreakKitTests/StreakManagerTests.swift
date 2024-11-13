@@ -25,6 +25,7 @@ class StreakManagerTests {
         let sut = StreakManager(persistence: persistence)
         let streak = sut.loadStreak()
         #expect(streak.lastDate == nil)
+        #expect(streak.length == 0)
     }
 
     @Test func loadStreakReturnsDefaultIfDecodeError() {
