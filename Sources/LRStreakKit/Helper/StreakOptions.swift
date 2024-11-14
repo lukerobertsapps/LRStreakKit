@@ -2,8 +2,7 @@
 //  StreakOptions.swift
 //  LRStreakKit
 //
-//  Created by Luke Roberts on 12/11/2024.
-//
+//  Copyright © 2024 Luke Roberts. All rights reserved.
 
 /// Contains options for streaks
 class StreakOptions: @unchecked Sendable {

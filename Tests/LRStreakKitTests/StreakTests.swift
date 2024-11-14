@@ -2,8 +2,7 @@
 //  StreakTests.swift
 //  LRStreakKitTests
 //
-//  Created by Luke Roberts on 08/11/2024.
-//
+//  Copyright © 2024 Luke Roberts. All rights reserved.
 
 import Foundation
 import Testing
